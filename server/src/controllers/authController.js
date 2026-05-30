@@ -7,32 +7,32 @@ const ApiError = require('../utils/apiError.js')
 const signup = async (req, res) => { 
     const {email, password} = req.body;
     if (!email || !password) {
-        throw new ApiError(400, "All fields are required !")
+        throw new ApiError(400, "email and password are required !")
     }
     const user = await UserModel.findOne({email});
-    if (user || user === undefined) {
-        return res.status(400).json({msg:"invalid email or password"})
+    if (user) {
+        throw new ApiError(400, "Invalid Email or Password !")
     }
     const passwordHash = await bcrypt.hash(password, parseInt(process.env.SALT));
     await UserModel.create({
         email: email,
         passwordHash: passwordHash
     });
-    res.status(200).json({msg:"User created successfully :)"})
+    res.status(200).json({message:"User created successfully :)"})
 }
 
 const login = async (req,res) => {
     const {email, password} = req.body;
     
     if (!email || !password) {
-        res.status(400).json({msg:"Fields cannot be empty !"})
+        throw new ApiError(400, "All fields are required !")
     }
     
     const user = await UserModel.findOne({email})
     const isMatch = await bcrypt.compare(password, user.passwordHash)
     
     if (!user || !isMatch) {
-        return res.status(400).json({msg:"invalid email or password"})
+        throw new ApiError(400, "Invalid email or password !")
     }
     
     
@@ -58,7 +58,7 @@ const login = async (req,res) => {
         strict: true
     })
     .status(200)
-    .json({msg:"Login Successfull !", accessToken: accessToken})
+    .json({message:"Login Successfull !", accessToken: accessToken})
 }
 
 

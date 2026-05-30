@@ -6,24 +6,24 @@ const SessionModel = require('../models/SessionModel.js')
 const refreshTokenController = async (req, res) => {
     const currRefreshToken = req.cookies.refreshToken;
     if(!currRefreshToken){
-        res.status(401).json({msg:"Please login to access this resource."})
+        throw new ApiError(401, "Please login to access this resource !")
     }
     // verify old token
     const decoded = await jwt.verify(currRefreshToken, process.env.REFRESH_TOKEN_SIGNATURE)
     // check user exist
     const user = await UserModel.findById(decoded.userId)
     if(!user){
-        res.status(401).json({msg:"user not found"})
+        throw new ApiError(401, "User Not Found !")
     }
     // validate session
     const session = await SessionModel.findById(decoded.sessionId)
     if(!session || session.isRevoked || session.expiresAt < new Date()){
-        res.status(400).json({msg:"session not found"})
+        throw new ApiError(400, "Session Not Found !")
     }
     // verify refresh token with stored token
     const isMatch = await bcrypt.compare(currRefreshToken, session.refreshTokenHash);
     if(!isMatch){ // chance of token reuse so revoke session and force login
-        res.status(400).json({msg:"session revoked"})
+        throw new ApiError(400, "Session Revoked !")
         session.isRevoked = true;
         res.clearCookie("refreshToken");
     }
@@ -45,7 +45,7 @@ const refreshTokenController = async (req, res) => {
     })
     .status(200)
     .json({
-        msg:"refreshed !",
+        message:"refreshed !",
         accessToken: newAccessToken
     })
 }

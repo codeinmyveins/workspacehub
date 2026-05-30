@@ -5,9 +5,9 @@ const authMiddleware = require('../middlewares/authMiddleware.js')
 router
 .get('/test-route',authMiddleware,(req,res)=>{
     try {
-        res.json({msg:"you are authenticated"})
+        res.status(200).json({message:"you are authenticated"})
     } catch (error) {
-        res.json({msg:"accessToken expired bro !",error:error})
+        throw new ApiError(401, "Access Token not found !")
     }
 })
 

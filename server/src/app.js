@@ -15,7 +15,7 @@ app.use('/api/v1',testRouter);
 
 app.get('/api/v1/health', (req,res) => {
     res.status(200)
-    .json({msg:"server is up & healthy !"})
+    .json({message:"server is up & healthy !"})
 })
 
 app.use(errorMiddleware)
