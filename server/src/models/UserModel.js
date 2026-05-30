@@ -4,7 +4,7 @@ const UserSchema = new mongoose.Schema({
     username: {
         type: String,
         unique: true,
-        default: ""
+        sparse: true // allow multiple undefined/null values
     },
     email: {
         type: String,
@@ -19,6 +19,4 @@ const UserSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", UserSchema)
 
-module.exports = {
-    User
-}
+module.exports = User;

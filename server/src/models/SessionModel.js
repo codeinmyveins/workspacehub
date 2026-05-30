@@ -18,7 +18,7 @@ const SessionSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    isRovked: {
+    isRevoked: {
         type: Boolean,
         default: false
     },
@@ -30,6 +30,4 @@ const SessionSchema = new mongoose.Schema({
 
 const Session = mongoose.model("Session", SessionSchema);
 
-module.exports = {
-    Session
-}
+module.exports = Session;

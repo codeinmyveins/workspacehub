@@ -4,7 +4,7 @@ function errorMiddleware(error, req, res, next) {
         path: req.path,
         method: req.method,
         Message: error.message,
-        Stack: error.Stack
+        Stack: error.stack
     })
 
     return res.status(error.statusCode || 500).json({
@@ -13,3 +13,5 @@ function errorMiddleware(error, req, res, next) {
     });
     
 };
+
+module.exports = errorMiddleware;
