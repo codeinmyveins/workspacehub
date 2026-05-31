@@ -29,17 +29,21 @@ const login = async (req,res) => {
     }
     
     const user = await UserModel.findOne({email})
-    const isMatch = await bcrypt.compare(password, user.passwordHash)
-    
-    if (!user || !isMatch) {
+    if (!user) {
         throw new ApiError(400, "Invalid email or password !")
     }
+    
+    const isMatch = await bcrypt.compare(password, user.passwordHash)
+    if (!isMatch) {
+        throw new ApiError(400, "Invalid email or password !")
+    }
+    
     
     
     const session = await SessionModel.create({
         userId: user._id,
         ip: req.ip || 'Unknown',
-        device: req.headers['User-Agent'] || 'Unknown',
+        device: req.headers['user-agent'] || 'Unknown',
         refreshTokenHash: 'temporary',
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     })

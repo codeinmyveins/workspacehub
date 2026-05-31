@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const UserModel = require('../models/UserModel.js')
 const SessionModel = require('../models/SessionModel.js')
+const ApiError = require('../utils/apiError.js')
 
 const refreshTokenController = async (req, res) => {
     const currRefreshToken = req.cookies.refreshToken;
