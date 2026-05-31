@@ -6,11 +6,13 @@ const asyncHandler = require('../utils/asyncHandler.js')
 const authMiddleware = require('../middlewares/authMiddleware.js')
 const changePasswordController = require('../controllers/changePasswordController.js')
 const forgotPasswordController = require('../controllers/forgotPasswordController.js')
+const resetPasswordController = require('../controllers/resetPasswordController.js')
 
 router.post('/auth/signup',asyncHandler(signup))
 router.post('/auth/login',asyncHandler(login))
 router.get('/auth/refresh', asyncHandler(refreshTokenController))
 router.post('/auth/change-password', authMiddleware, asyncHandler(changePasswordController))
 router.post('/auth/forgot-password', asyncHandler(forgotPasswordController))
+router.post('/auth/reset-password/:resetToken', asyncHandler(resetPasswordController))
 
 module.exports = router;

@@ -16,11 +16,12 @@ const forgotPasswordController = async (req, res) =>{
     const passwordResetToken = crypto.randomBytes(32).toString('hex');
     const passwordResetTokenHash = crypto.createHash('sha256').update(passwordResetToken).digest('hex');
     
-    user.refreshTokenHash = passwordResetTokenHash;
-    user.refreshTokenExpiresAt = new Date(Date.now() + 60 * 60 * 1000);
+    user.passwordResetTokenHash = passwordResetTokenHash;
+    user.passwordResetTokenExpiresAt = new Date(Date.now() + 60 * 60 * 1000);
     await user.save();
 
     const passwordresetLink = `http://localhost:5000/api/v1/password-reset-link/${passwordResetToken}`
+    console.log(passwordResetToken)
     await sendEmail({
         to: user.email,
         subject: 'WorkSpaceHub Password Reset Link',
