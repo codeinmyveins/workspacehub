@@ -15,7 +15,6 @@ const resetPasswordController = async (req, res) => {
         passwordResetTokenHash: tokenHash,
         passwordResetTokenExpiresAt: {$gt: Date.now()}
     }, {_id: 1})
-    console.log(user)
     if(!user){
         throw new ApiError(404, "link expired")
     }
