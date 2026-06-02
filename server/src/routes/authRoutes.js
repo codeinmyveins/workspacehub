@@ -1,18 +1,23 @@
 const express = require('express')
 const router = express.Router()
-const {signup, login} = require('../controllers/authController.js')
-const refreshTokenController = require('../controllers/refreshTokenController.js')
 const asyncHandler = require('../utils/asyncHandler.js')
 const authMiddleware = require('../middlewares/authMiddleware.js')
-const changePasswordController = require('../controllers/changePasswordController.js')
-const forgotPasswordController = require('../controllers/forgotPasswordController.js')
-const resetPasswordController = require('../controllers/resetPasswordController.js')
+const {
+    signup,
+    login,
+    logout,
+    refreshToken,
+    changePassword,
+    forgotPassword,
+    resetPassword
+} = require('../controllers/authController.js')
 
 router.post('/auth/signup',asyncHandler(signup))
 router.post('/auth/login',asyncHandler(login))
-router.get('/auth/refresh', asyncHandler(refreshTokenController))
-router.post('/auth/change-password', authMiddleware, asyncHandler(changePasswordController))
-router.post('/auth/forgot-password', asyncHandler(forgotPasswordController))
-router.post('/auth/reset-password/:resetToken', asyncHandler(resetPasswordController))
+router.post('/auth/logout', authMiddleware, asyncHandler(logout))
+router.get('/auth/refresh', asyncHandler(refreshToken))
+router.post('/auth/change-password', authMiddleware, asyncHandler(changePassword))
+router.post('/auth/forgot-password', asyncHandler(forgotPassword))
+router.post('/auth/reset-password/:resetToken', asyncHandler(resetPassword))
 
 module.exports = router;
