@@ -74,7 +74,7 @@ const logout = async (req, res) => {
     }
 
     const session = await SessionModel.updateOne(
-        {userId: req.user.userId, sessionId: req.user.sessionId},
+        {userId: req.user.userId, _id: req.user.sessionId},
         {isRevoked: true}
     )
     if(!session){
@@ -82,7 +82,7 @@ const logout = async (req, res) => {
     }
     res.clearCookie("refreshToken",{sameSite: true, httpOnly:true, secure: false})
     .status(200)
-    .json({msg:"you are logged out !"})
+    .json({message:"you are logged out !"})
 }
 
 const refreshToken = async (req, res) => {
