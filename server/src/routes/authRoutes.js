@@ -11,8 +11,10 @@ const {
     forgotPassword,
     resetPassword
 } = require('../controllers/authController.js')
+const verifyOtp = require('../controllers/verifyOtpController.js')
 
 router.post('/auth/signup',asyncHandler(signup))
+router.post('/auth/verify-otp', asyncHandler(verifyOtp))
 router.post('/auth/login',asyncHandler(login))
 router.post('/auth/logout', authMiddleware, asyncHandler(logout))
 router.get('/auth/refresh', asyncHandler(refreshToken))

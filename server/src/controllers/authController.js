@@ -3,25 +3,44 @@ const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
 const UserModel = require('../models/UserModel.js')
 const SessionModel = require('../models/SessionModel.js')
+const OtpModel = require("../models/OtpModel.js")
 const ApiError = require('../utils/apiError.js')
+const crypto = require("crypto");
+const generateOtp = require("../utils/generateOtp.js")
+const otpTemplate = require("../templates/otpTemplate.js")
 const sendEmail = require('../utils/emailSender.js')
 const resetPasswordTemplate = require('../templates/passwordResetTemplate.js')
 
 const signup = async (req, res) => { 
-    const {email, password} = req.body;
-    if (!email || !password) {
-        throw new ApiError(400, "email and password are required !")
+    const {email } = req.body;
+    if (!email) {
+        throw new ApiError(400, "email is required !")
     }
     const user = await UserModel.findOne({email});
     if (user) {
         throw new ApiError(400, "Invalid Email or Password !")
     }
-    const passwordHash = await bcrypt.hash(password, parseInt(process.env.SALT));
-    await UserModel.create({
+    const otp = generateOtp().toString();
+    const otpHash = crypto.createHash("sha256").update(otp).digest("hex");
+
+    await OtpModel.create({
         email: email,
-        passwordHash: passwordHash
+        otpHash: otpHash,
+        expiresAt: new Date(Date.now() + 3 * 60 * 1000)
     });
-    res.status(200).json({message:"User created successfully :)"})
+    
+    await sendEmail({
+        to: email,
+        subject: "verify your Email",
+        html: otpTemplate(otp)
+    });
+
+    // const passwordHash = await bcrypt.hash(password, parseInt(process.env.SALT));
+    // await UserModel.create({
+    //     email: email,
+    //     passwordHash: passwordHash
+    // });
+    res.status(200).json({message:"otp has sended to your email :)"})
 }
 
 const login = async (req,res) => {
